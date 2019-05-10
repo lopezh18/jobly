@@ -40,11 +40,18 @@ class Job {
       WHERE id = $1`,
     [id]);
 
+    
     if(!jobQuery.rows.length) {
       throw new ExpressError('ID Not Found', 404);
     }
+    
+    const techQuery = await db.query(`
+    SELECT language_name
+    FROM technologies
+    where job_id =  $1`, 
+    [id]);
 
-    return jobQuery.rows[0];
+    return { job: jobQuery.rows[0], technology: techQuery.rows };
   }
 
   static async patchJobInfo(updateObj) {

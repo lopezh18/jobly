@@ -4,6 +4,8 @@ DROP TABLE IF EXISTS companies;
 DROP TABLE IF EXISTS jobs;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS applications;
+DROP TABLE IF EXISTS technologies;
+DROP TABLE IF EXISTS languages;
 
 CREATE TABLE companies (
     handle TEXT PRIMARY KEY, 
@@ -39,7 +41,13 @@ CREATE TABLE applications (
     state statevals NOT NULL, 
     created_at DATE DEFAULT CURRENT_DATE,
     PRIMARY KEY(username, job_id)
-)
+);
 
+CREATE TABLE languages(
+    name TEXT NOT NULL PRIMARY KEY
+);
 
-
+CREATE TABLE technologies(
+    job_id INT REFERENCES jobs ON DELETE CASCADE,
+    language_name TEXT REFERENCES languages ON DELETE CASCADE
+);

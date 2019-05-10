@@ -1,0 +1,22 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/root.json",
+  "type": "object",
+  "title": "The Root Schema",
+  "required": [
+    "language_name"
+  ],
+  "properties": {
+    "language_name": {
+      "$id": "#/properties/language_name",
+      "type": "string",
+      "title": "The Language_name Schema",
+      "default": "",
+      "examples": [
+        "python"
+      ],
+      "pattern": "^(.*)$"
+    }
+  }
+}

@@ -6,6 +6,7 @@ const jobUpdateSchema = require('../schemas/jobUpdateSchema.json');
 const userSchema = require('../schemas/userSchema.json');
 const userUpdateSchema = require('../schemas/userUpdateSchema.json');
 const applicationSchema = require('../schemas/applicationSchema.json');
+const technologySchema = require('../schemas/technologySchema.json');
 const ExpressError = require('../helpers/expressError');
 
 function validateCompanyPost(req, res, next) {
@@ -93,6 +94,18 @@ function validateAppState(req, res, next) {
   return next();
 }
 
+function validateTechnology(req, res, next) {
+  const result = jsonschema.validate(req.body, technologySchema);
+
+  if (!result.valid) {
+    let listOfErrors = result.errors.map(err => err.stack);
+    let error = new ExpressError(listOfErrors, 400);
+    return next(error);
+  }
+
+  return next();
+}
+
 
 module.exports = {
   validateCompanyPost,
@@ -101,5 +114,6 @@ module.exports = {
   validateJobPatch, 
   validateUserPost, 
   validateUserPatch,
-  validateAppState
+  validateAppState,
+  validateTechnology
 };

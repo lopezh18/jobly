@@ -3,6 +3,7 @@
 DROP TABLE IF EXISTS companies;
 DROP TABLE IF EXISTS jobs;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS applications;
 
 CREATE TABLE companies (
     handle TEXT PRIMARY KEY, 
@@ -30,4 +31,15 @@ CREATE TABLE users (
     photo_url TEXT, 
     is_admin BOOLEAN DEFAULT FALSE NOT NULL
 );
+
+CREATE TYPE statevals AS ENUM ('interested', 'applied', 'accepted', 'rejected');
+CREATE TABLE applications (
+    username TEXT REFERENCES users ON DELETE CASCADE,
+    job_id INT REFERENCES jobs ON DELETE CASCADE,
+    state statevals NOT NULL, 
+    created_at DATE DEFAULT CURRENT_DATE,
+    PRIMARY KEY(username, job_id)
+)
+
+
 

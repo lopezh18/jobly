@@ -2,8 +2,9 @@
 const express = require('express');
 const router = new express.Router();
 const Job = require('../models/job');
-const { authenticateJWT, ensureLoggedIn, ensureAdmin } = require('../middleware/validation');
-const { validateJobPost, validateJobPatch } = require('../middleware/middleware');
+const Application = require('../models/application');
+const { authenticateJWT, ensureLoggedIn, ensureAdmin} = require('../middleware/validation');
+const { validateJobPost, validateJobPatch, validateAppState } = require('../middleware/middleware');
 const partialUpdate = require('../helpers/partialUpdate');
 
 router.get('/', authenticateJWT, ensureLoggedIn, async function (req, res, next) {
@@ -51,6 +52,16 @@ router.delete('/:id', authenticateJWT, ensureLoggedIn, ensureAdmin, async functi
     let { id } = req.params;
     let deletedJob = await Job.deleteJob(id);
     return res.json({ message: `Job ${deletedJob.title} at ID: ${deletedJob.id} was deleted` });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/:id/apply', authenticateJWT, ensureLoggedIn, validateAppState, async function(req, res, next) {
+  try{
+    let { id } = req.params;
+    let appQuery = await Application.jobStatus(req.user.username, id, req.body.state.toLowerCase());
+    return res.json({ message: appQuery.state });
   } catch (err) {
     next(err);
   }

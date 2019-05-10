@@ -32,7 +32,7 @@ router.get('/', async function(req, res, next){
 router.get('/:username', async function(req, res, next){
   try{
     const results = await User.getSingleUser(req.params.username.toLowerCase());
-    return res.json({ user: results });
+    return res.json({ user: results.user, jobs: results.jobs });
   } catch(e){
     return next(e);
   }

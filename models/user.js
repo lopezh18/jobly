@@ -1,7 +1,6 @@
 const db = require('../db');
 const ExpressError = require('../helpers/expressError');
 
-
 class User{
 
   static async createUser(userObj){
@@ -24,7 +23,7 @@ class User{
 
   static async getSingleUser(username){
     const userQuery = await db.query(`
-    SELECT username, first_name, last_name, email, photo_url
+    SELECT username, first_name, last_name, email, photo_url, is_admin
     FROM users
     WHERE username = $1`, [username]);
 
@@ -32,7 +31,15 @@ class User{
       throw new ExpressError(`${ username } not found`, 404);
     }
 
-    return userQuery.rows[0];
+    const jobQuery = await db.query(`
+    SELECT a.job_id, a.state, j.title, j.company_handle
+    FROM applications a
+    JOIN jobs j
+    ON a.job_id = j.id
+    WHERE username=$1`,
+    [username]);
+
+    return { user: userQuery.rows[0], jobs: jobQuery.rows };
   }
 
   static async updateUser(updatedData){
